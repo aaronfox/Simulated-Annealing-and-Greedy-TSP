@@ -3,7 +3,7 @@
 from __future__ import print_function
 import math
 import random
-import matplotlib.pyplot
+import matplotlib.pyplot as plt
 from collections import defaultdict
 from simanneal import Annealer
 
@@ -73,6 +73,17 @@ if __name__ == '__main__':
         'Baltimore': (39.28, 76.62)
     }
 
+    # Code added by Trevor DeGruccio to create initial Plot
+    x1 = []
+    y1 = []
+    for k, (x,y) in cities.items():
+        x1.append(x)
+        y1.append(y)
+
+    plt.scatter(x1, y1)
+    plt.draw()
+    # End of Trevor's Code 12/5/2020
+
     # initial state, a randomly-ordered itinerary
     init_state = list(cities)
     random.shuffle(init_state)
@@ -95,3 +106,7 @@ if __name__ == '__main__':
     print()
     print("%i mile route:" % e)
     print(" ➞  ".join(state))
+
+    # Code added by Trevor DeGruccio to create initial Plot
+    plt.show()
+    # Code added by Trevor DeGruccio to create initial Plot
