@@ -47,6 +47,43 @@ class TravellingSalesmanProblem(Annealer):
         return e
 
 
+def print_route(route):
+    for s in state:
+        print(s)
+
+
+def plot_route(route, cities):
+    # Code added by Trevor DeGruccio to create initial Plot
+    x1 = []
+    y1 = []
+    for k, (x, y) in cities.items():
+        x1.append(x)
+        y1.append(y)
+
+    plt.scatter(x1, y1)
+    plt.draw()
+    # End of Trevor's Code 12/5/2020
+
+    # Code added by Trevor DeGruccio to create initial Plot
+
+    # Connect cities based on states
+
+    x2 = []
+    y2 = []
+    for city in route:
+        x2.append(cities[city][0])
+        y2.append(cities[city][1])
+
+    # Append route back to original
+    x2.append(cities[route[0]][0])
+    y2.append(cities[route[0]][1])
+
+    plt.plot(x2, y2, '-o')
+
+    plt.show()
+    # Code added by Trevor DeGruccio to create initial Plot
+
+
 if __name__ == '__main__':
 
     # latitude and longitude for the twenty largest U.S. cities
@@ -73,16 +110,7 @@ if __name__ == '__main__':
         'Baltimore': (39.28, 76.62)
     }
 
-    # Code added by Trevor DeGruccio to create initial Plot
-    x1 = []
-    y1 = []
-    for k, (x,y) in cities.items():
-        x1.append(x)
-        y1.append(y)
 
-    plt.scatter(x1, y1)
-    plt.draw()
-    # End of Trevor's Code 12/5/2020
 
     # initial state, a randomly-ordered itinerary
     init_state = list(cities)
@@ -96,6 +124,8 @@ if __name__ == '__main__':
 
     tsp = TravellingSalesmanProblem(init_state, distance_matrix)
     tsp.set_schedule(tsp.auto(minutes=0.2))
+    # tsp.set_schedule(tsp.auto(minutes=0.001))
+
     # since our state is just a list, slice is the fastest way to copy
     tsp.copy_strategy = "slice"
     state, e = tsp.anneal()
@@ -107,6 +137,5 @@ if __name__ == '__main__':
     print("%i mile route:" % e)
     print(" ➞  ".join(state))
 
-    # Code added by Trevor DeGruccio to create initial Plot
-    plt.show()
-    # Code added by Trevor DeGruccio to create initial Plot
+    plot_route(state, cities)
+
