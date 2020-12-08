@@ -6,6 +6,8 @@ import random
 import matplotlib.pyplot as plt
 from collections import defaultdict
 from simanneal import Annealer
+import threading
+import queue
 
 
 def distance(a, b):
@@ -157,35 +159,8 @@ def calc_distance_of_route(route, cities):
     return length
 
 
-if __name__ == '__main__':
-
-    # latitude and longitude for the twenty largest U.S. cities
-    cities = {
-        'New York City': (40.72, 74.00),
-        'Los Angeles': (34.05, 118.25),
-        'Chicago': (41.88, 87.63),
-        'Houston': (29.77, 95.38),
-        'Phoenix': (33.45, 112.07),
-        'Philadelphia': (39.95, 75.17),
-        'San Antonio': (29.53, 98.47),
-        'Dallas': (32.78, 96.80),
-        'San Diego': (32.78, 117.15),
-        'San Jose': (37.30, 121.87),
-        'Detroit': (42.33, 83.05),
-        'San Francisco': (37.78, 122.42),
-        'Jacksonville': (30.32, 81.70),
-        'Indianapolis': (39.78, 86.15),
-        'Austin': (30.27, 97.77),
-        'Columbus': (39.98, 82.98),
-        'Fort Worth': (32.75, 97.33),
-        'Charlotte': (35.23, 80.85),
-        'Memphis': (35.12, 89.97),
-        'Baltimore': (39.28, 76.62)
-    }
-
-
-
-    # initial state, a randomly-ordered itinerary
+def run_sim_anneal(cities, result_queue):
+      # initial state, a randomly-ordered itinerary
     init_state = list(cities)
     random.shuffle(init_state)
 
@@ -210,15 +185,89 @@ if __name__ == '__main__':
     print("%i mile route:" % e)
     print(" ➞  ".join(state))
 
-    plot_route(state, cities, 'Simulated Annealing Route: ' + str(int(e)) + ' Miles')
-    print(calc_distance_of_route(state, cities))
+    result_queue.put((state, e))
 
+    
+
+def test_algorithms(cities):
+    num_threads = 3
+    result_queue = queue.Queue()
+    for i in range(num_threads):
+        x = threading.Thread(target=run_sim_anneal,
+                             args=(cities, result_queue,))
+        x.start()
+        x.join()
+        # result_queue.get()
+
+        print(result_queue)
+
+    # Print Threading results and get best distance
+    best_distance = float('inf')
+    best_route = []
+    for i in range(num_threads):
+        result_candidate = result_queue.get()
+        # print(result_candidate)
+        if result_candidate[1] < best_distance:
+            best_distance = result_candidate[1]
+            best_route = result_candidate[0]
+
+    print("Parallel Simulated Annealing Results: ")
+    print('Best Route: ' + str(best_route))
+    print('Distance of route: ' + str(best_distance))
+
+    plot_route(best_route, cities, 'Simulated Annealing Route: ' +
+               str(int(best_distance)) + ' Miles')
+    # print(calc_distance_of_route(state, cities))
 
     greedy_route, min_dist = greedy(cities, 'New York City')
     plot_route(greedy_route, cities, 'Greedy Algorithm Route: ' +
                str(int(min_dist)) + ' Miles')
 
-    print(greedy_route)
-    print(calc_distance_of_route(greedy_route, cities))
+    print("Local Greedy Results: ")
+    print('Best Route: ' + str(greedy_route))
+    print('Distance of route: ' + str(min_dist))
+
+if __name__ == '__main__':
+
+    # latitude and longitude for the ten largest U.S. cities
+    cities10 = {
+        'New York City': (40.72, 74.00),
+        'Los Angeles': (34.05, 118.25),
+        'Chicago': (41.88, 87.63),
+        'Houston': (29.77, 95.38),
+        'Phoenix': (33.45, 112.07),
+        'Philadelphia': (39.95, 75.17),
+        'San Antonio': (29.53, 98.47),
+        'Dallas': (32.78, 96.80),
+        'San Diego': (32.78, 117.15),
+        'San Jose': (37.30, 121.87),
+    }
+
+    # latitude and longitude for the twenty largest U.S. cities
+    cities20 = {
+        'New York City': (40.72, 74.00),
+        'Los Angeles': (34.05, 118.25),
+        'Chicago': (41.88, 87.63),
+        'Houston': (29.77, 95.38),
+        'Phoenix': (33.45, 112.07),
+        'Philadelphia': (39.95, 75.17),
+        'San Antonio': (29.53, 98.47),
+        'Dallas': (32.78, 96.80),
+        'San Diego': (32.78, 117.15),
+        'San Jose': (37.30, 121.87),
+        'Detroit': (42.33, 83.05),
+        'San Francisco': (37.78, 122.42),
+        'Jacksonville': (30.32, 81.70),
+        'Indianapolis': (39.78, 86.15),
+        'Austin': (30.27, 97.77),
+        'Columbus': (39.98, 82.98),
+        'Fort Worth': (32.75, 97.33),
+        'Charlotte': (35.23, 80.85),
+        'Memphis': (35.12, 89.97),
+        'Baltimore': (39.28, 76.62)
+    }
+
+    test_algorithms(cities20)
+   
 
 
