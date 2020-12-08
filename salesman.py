@@ -52,7 +52,7 @@ def print_route(route):
         print(s)
 
 
-def plot_route(route, cities):
+def plot_route(route, cities, title):
     x1 = []
     y1 = []
     for k, (x, y) in cities.items():
@@ -60,6 +60,8 @@ def plot_route(route, cities):
         y1.append(y)
 
     plt.scatter(x1, y1)
+    plt.title(title)
+
     plt.draw()
 
     # Connect cities based on states
@@ -86,19 +88,22 @@ def greedy(cities, start_city):
     final_order = []
     min_length = float('inf')
 
-    for i in range(len(cities)):
-        order = [start_city]
+    for city_name in cities.keys():
+        order = [city_name]
         length = 0
 
-        next_city, distance = get_nearest_neighbor(cities, order, start_city)
+        next_city, distance = get_nearest_neighbor(cities, order, city_name)
         length = length + distance
         order.append(next_city)
 
         while len(order) < len(cities):
-            next_city, distance = get_nearest_neighbor(
-                cities, order, next_city)
+            next_city, distance = get_nearest_neighbor(cities, order, next_city)
             length = length + distance
+
             order.append(next_city)
+        # Append return length of route
+        return_dist = get_distance_in_miles(order[0], order[len(order) - 1], cities)
+        length = length + return_dist
 
         if length < min_length:
             min_length = length
@@ -143,6 +148,11 @@ def calc_distance_of_route(route, cities):
     length = 0
     for i in range(len(route) - 1):
         length = length + get_distance_in_miles(route[i], route[i+1], cities)
+
+    # Add in return distance
+    length = length + get_distance_in_miles(route[0], route[len(route) - 1], cities)
+
+
     
     return length
 
@@ -196,15 +206,19 @@ if __name__ == '__main__':
     while state[0] != 'New York City':
         state = state[1:] + state[:1]  # rotate NYC to start
 
-    print()
+    print('\n\nstate: ' + str(state))
     print("%i mile route:" % e)
     print(" ➞  ".join(state))
 
-    plot_route(state, cities)
+    plot_route(state, cities, 'Simulated Annealing Route: ' + str(int(e)) + ' Miles')
+    print(calc_distance_of_route(state, cities))
+
 
     greedy_route, min_dist = greedy(cities, 'New York City')
+    plot_route(greedy_route, cities, 'Greedy Algorithm Route: ' +
+               str(int(min_dist)) + ' Miles')
+
     print(greedy_route)
     print(calc_distance_of_route(greedy_route, cities))
-    print(calc_distance_of_route(state, cities))
 
 
