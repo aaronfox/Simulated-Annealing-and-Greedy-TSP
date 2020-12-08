@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # CREDIT TO: https://github.com/perrygeo/simanneal/tree/951e7d89a8b7f19aeb05b64e7cc8b844a734af89
 from __future__ import print_function
+import itertools
 import math
 import random
 import matplotlib.pyplot as plt
@@ -8,6 +9,7 @@ from collections import defaultdict
 from simanneal import Annealer
 import threading
 import queue
+from collections import OrderedDict
 
 
 def distance(a, b):
@@ -50,8 +52,8 @@ class TravellingSalesmanProblem(Annealer):
 
 
 def print_route(route):
-    for s in state:
-        print(s)
+    for c in route:
+        print(c)
 
 
 def plot_route(route, cities, title):
@@ -63,6 +65,8 @@ def plot_route(route, cities, title):
 
     plt.scatter(x1, y1)
     plt.title(title)
+    plt.xlabel('Longitude')
+    plt.ylabel('Latitude')
 
     plt.draw()
 
@@ -181,16 +185,34 @@ def run_sim_anneal(cities, result_queue):
     while state[0] != 'New York City':
         state = state[1:] + state[:1]  # rotate NYC to start
 
-    print('\n\nstate: ' + str(state))
-    print("%i mile route:" % e)
-    print(" ➞  ".join(state))
-
     result_queue.put((state, e))
 
+
+# def brute_force_tsp(cities):
+#     print("Brute forcing TSP...")
+#     ordered_dict = OrderedDict()
+#     # Convert dict to orderedDict
+#     cities
+#     for key, val in cities.items():
+#         citi
+
+#     # generate all permutations of indices
+#     indices = []
+#     for i in range(len(cities)):
+#         indices.append(i)
+
+#     min_length = float('inf')
+#     best_route = []
+#     all_perms = itertools.permutations(indices)
+#     print(all_perms)
+#     for perm in all_perms:
+#         if calc_distance_of_route
     
+#     print(ordered_dict)
+
 
 def test_algorithms(cities):
-    num_threads = 3
+    num_threads = 1
     result_queue = queue.Queue()
     for i in range(num_threads):
         x = threading.Thread(target=run_sim_anneal,
@@ -199,14 +221,12 @@ def test_algorithms(cities):
         x.join()
         # result_queue.get()
 
-        print(result_queue)
 
     # Print Threading results and get best distance
     best_distance = float('inf')
     best_route = []
     for i in range(num_threads):
         result_candidate = result_queue.get()
-        # print(result_candidate)
         if result_candidate[1] < best_distance:
             best_distance = result_candidate[1]
             best_route = result_candidate[0]
@@ -217,7 +237,6 @@ def test_algorithms(cities):
 
     plot_route(best_route, cities, 'Simulated Annealing Route: ' +
                str(int(best_distance)) + ' Miles')
-    # print(calc_distance_of_route(state, cities))
 
     greedy_route, min_dist = greedy(cities, 'New York City')
     plot_route(greedy_route, cities, 'Greedy Algorithm Route: ' +
@@ -228,6 +247,15 @@ def test_algorithms(cities):
     print('Distance of route: ' + str(min_dist))
 
 if __name__ == '__main__':
+
+    # latitude and longitude for the five largest U.S. cities
+    cities5 = {
+        'New York City': (40.72, 74.00),
+        'Los Angeles': (34.05, 118.25),
+        'Chicago': (41.88, 87.63),
+        'Houston': (29.77, 95.38),
+        'Phoenix': (33.45, 112.07),
+    }
 
     # latitude and longitude for the ten largest U.S. cities
     cities10 = {
@@ -267,7 +295,42 @@ if __name__ == '__main__':
         'Baltimore': (39.28, 76.62)
     }
 
-    test_algorithms(cities20)
+    # latitude and longitude for the thirty largest U.S. cities
+    cities30 = {
+        'New York City': (40.72, 74.00),
+        'Los Angeles': (34.05, 118.25),
+        'Chicago': (41.88, 87.63),
+        'Houston': (29.77, 95.38),
+        'Phoenix': (33.45, 112.07),
+        'Philadelphia': (39.95, 75.17),
+        'San Antonio': (29.53, 98.47),
+        'Dallas': (32.78, 96.80),
+        'San Diego': (32.78, 117.15),
+        'San Jose': (37.30, 121.87),
+        'Detroit': (42.33, 83.05),
+        'San Francisco': (37.78, 122.42),
+        'Jacksonville': (30.32, 81.70),
+        'Indianapolis': (39.78, 86.15),
+        'Austin': (30.27, 97.77),
+        'Columbus': (39.98, 82.98),
+        'Fort Worth': (32.75, 97.33),
+        'Charlotte': (35.23, 80.85),
+        'Memphis': (35.12, 89.97),
+        'Baltimore': (39.28, 76.62),
+        'Boston': (42.71, 71.5),
+        'El Paso': (31.46, 106.29),
+        'Nashville': (36.10, 86.47),
+        'Detroit': (42.20, 83.3),
+        'Oklahoma City': (35.26, 97.28),
+        'Portland': (45.31, 122.41),
+        'Las Vegas': (36.10, 115.12),
+        'Louisville': (38.15, 85.46),
+        'MilWaukee': (43.2, 87.55),
+        'Albuquerque': (35.05, 106.39)
+    }
+
+    test_algorithms(cities30)
+    # brute_force_tsp(cities5)
    
 
 

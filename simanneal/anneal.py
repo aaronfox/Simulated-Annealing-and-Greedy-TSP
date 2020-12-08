@@ -155,6 +155,9 @@ class Annealer(object):
                           Energy=E,
                           Elapsed=time_string(elapsed)),
                   file=sys.stderr, end="")
+            # f = open("acceptances30.txt", "a")
+            # f.write(str(acceptance) + ", ")
+            # f.close()
             sys.stderr.flush()
         else:
             remain = (self.steps - step) * (elapsed / step)
@@ -166,6 +169,9 @@ class Annealer(object):
                           Elapsed=time_string(elapsed),
                           Remaining=time_string(remain)),
                   file=sys.stderr, end="")
+            # f = open("acceptances30.txt", "a")
+            # f.write(str(acceptance) + ", ")
+            # f.close()
             sys.stderr.flush()
 
     def anneal(self):
