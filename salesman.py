@@ -53,7 +53,6 @@ def print_route(route):
 
 
 def plot_route(route, cities):
-    # Code added by Trevor DeGruccio to create initial Plot
     x1 = []
     y1 = []
     for k, (x, y) in cities.items():
@@ -62,9 +61,6 @@ def plot_route(route, cities):
 
     plt.scatter(x1, y1)
     plt.draw()
-    # End of Trevor's Code 12/5/2020
-
-    # Code added by Trevor DeGruccio to create initial Plot
 
     # Connect cities based on states
 
@@ -81,7 +77,74 @@ def plot_route(route, cities):
     plt.plot(x2, y2, '-o')
 
     plt.show()
-    # Code added by Trevor DeGruccio to create initial Plot
+
+
+#### BEGIN GREEDY ####
+
+
+def greedy(cities, start_city):
+    final_order = []
+    min_length = float('inf')
+
+    for i in range(len(cities)):
+        order = [start_city]
+        length = 0
+
+        next_city, distance = get_nearest_neighbor(cities, order, start_city)
+        length = length + distance
+        order.append(next_city)
+
+        while len(order) < len(cities):
+            next_city, distance = get_nearest_neighbor(
+                cities, order, next_city)
+            length = length + distance
+            order.append(next_city)
+
+        if length < min_length:
+            min_length = length
+            final_order = order
+
+    return final_order, min_length
+
+
+def get_distance_in_miles(city1, city2, cities):
+    """Calculates distance between two latitude-longitude coordinates."""
+    a = cities[city1]
+    b = cities[city2]
+
+    R = 3963  # radius of Earth (miles)
+    lat1, lon1 = math.radians(a[0]), math.radians(a[1])
+    lat2, lon2 = math.radians(b[0]), math.radians(b[1])
+    return math.acos(math.sin(lat1) * math.sin(lat2) +
+                     math.cos(lat1) * math.cos(lat2) * math.cos(lon1 - lon2)) * R
+
+
+def get_nearest_neighbor(cities, visited, city):
+    min_dist = float('inf')
+    closest_city = None
+
+    for c in cities:
+        if c not in visited:
+            dist = get_distance_in_miles(city, c, cities)
+
+            if dist < min_dist:
+                closest_city = c
+                min_dist = dist
+
+    return closest_city, min_dist
+
+
+def get_distance(city1, city2, cities):
+    return math.sqrt((cities[city2][0] - cities[city1][0]) ** 2 + (cities[city2][1] - cities[city1][1]) ** 2)
+
+#### END GREEDY ####
+
+def calc_distance_of_route(route, cities):
+    length = 0
+    for i in range(len(route) - 1):
+        length = length + get_distance_in_miles(route[i], route[i+1], cities)
+    
+    return length
 
 
 if __name__ == '__main__':
@@ -138,4 +201,10 @@ if __name__ == '__main__':
     print(" ➞  ".join(state))
 
     plot_route(state, cities)
+
+    greedy_route, min_dist = greedy(cities, 'New York City')
+    print(greedy_route)
+    print(calc_distance_of_route(greedy_route, cities))
+    print(calc_distance_of_route(state, cities))
+
 
