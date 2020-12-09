@@ -52,11 +52,13 @@ class TravellingSalesmanProblem(Annealer):
 
 
 def print_route(route):
+    """ Simply prints route graphically to console for debugging """
     for c in route:
         print(c)
 
 
 def plot_route(route, cities, title):
+        """Plots route of cities using matplotlib"""
     x1 = []
     y1 = []
     for k, (x, y) in cities.items():
@@ -91,6 +93,7 @@ def plot_route(route, cities, title):
 
 
 def greedy(cities, start_city):
+    """ Implements greedy algorithm of TSP given a set of cities """
     final_order = []
     min_length = float('inf')
 
@@ -131,6 +134,7 @@ def get_distance_in_miles(city1, city2, cities):
 
 
 def get_nearest_neighbor(cities, visited, city):
+    """ Gets nearest neighbor and returns the city name and the distance """
     min_dist = float('inf')
     closest_city = None
 
@@ -146,11 +150,13 @@ def get_nearest_neighbor(cities, visited, city):
 
 
 def get_distance(city1, city2, cities):
+    """ Returns Euclidean distance between two cities """
     return math.sqrt((cities[city2][0] - cities[city1][0]) ** 2 + (cities[city2][1] - cities[city1][1]) ** 2)
 
 #### END GREEDY ####
 
 def calc_distance_of_route(route, cities):
+    """ Calculates overall Euclidean distance in miles of all route """
     length = 0
     for i in range(len(route) - 1):
         length = length + get_distance_in_miles(route[i], route[i+1], cities)
@@ -164,6 +170,7 @@ def calc_distance_of_route(route, cities):
 
 
 def run_sim_anneal(cities, result_queue):
+    """ Runs the simulated annealing algorithm with a random set of cities """
       # initial state, a randomly-ordered itinerary
     init_state = list(cities)
     random.shuffle(init_state)
@@ -187,32 +194,9 @@ def run_sim_anneal(cities, result_queue):
 
     result_queue.put((state, e))
 
-
-# def brute_force_tsp(cities):
-#     print("Brute forcing TSP...")
-#     ordered_dict = OrderedDict()
-#     # Convert dict to orderedDict
-#     cities
-#     for key, val in cities.items():
-#         citi
-
-#     # generate all permutations of indices
-#     indices = []
-#     for i in range(len(cities)):
-#         indices.append(i)
-
-#     min_length = float('inf')
-#     best_route = []
-#     all_perms = itertools.permutations(indices)
-#     print(all_perms)
-#     for perm in all_perms:
-#         if calc_distance_of_route
-    
-#     print(ordered_dict)
-
-
 def test_algorithms(cities):
-    num_threads = 1
+    """ Automates testing of both algorithms """
+    num_threads = 3
     result_queue = queue.Queue()
     for i in range(num_threads):
         x = threading.Thread(target=run_sim_anneal,
@@ -330,7 +314,6 @@ if __name__ == '__main__':
     }
 
     test_algorithms(cities30)
-    # brute_force_tsp(cities5)
    
 
 
