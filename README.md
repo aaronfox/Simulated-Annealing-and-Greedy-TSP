@@ -1,6 +1,6 @@
 # Simulated-Annealing-and-Greedy-TSP
 
-# Thanks to https://github.com/perrygeo/simanneal/tree/951e7d89a8b7f19aeb05b64e7cc8b844a734af89 for PyPi source code
+Thanks to https://github.com/perrygeo/simanneal/tree/951e7d89a8b7f19aeb05b64e7cc8b844a734af89 for PyPi source code
 
 The source code of the program can be found at: https://github.com/aaronfox/Simulated-Annealing-and-Greedy-TSP
 
