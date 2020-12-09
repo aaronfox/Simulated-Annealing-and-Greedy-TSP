@@ -1,7 +1,10 @@
 import numpy as np
 import math
 
+""" Note: this code was only used as a test protype of the greedy algorith. The entire implementation can be found in salesman.py """
 def greedy(cities, start_city):
+    """ Implements greedy algorithm of TSP given a set of cities """
+
     final_order = []
     min_length = float('inf')
 
@@ -37,6 +40,7 @@ def get_distance_in_miles(city1, city2, cities):
                      math.cos(lat1) * math.cos(lat2) * math.cos(lon1 - lon2)) * R
 
 def get_nearest_neighbor(cities, visited, city):
+    """ Gets nearest neighbor and returns the city name and the distance """
     min_dist = float('inf')
     closest_city = None
 
@@ -52,6 +56,7 @@ def get_nearest_neighbor(cities, visited, city):
 
 
 def get_distance(city1, city2, cities):
+    """ Returns Euclidean distance between two cities """
     return math.sqrt((cities[city2][0] - cities[city1][0]) ** 2 + (cities[city2][1] - cities[city1][1]) ** 2)
 
 if __name__ == '__main__':
