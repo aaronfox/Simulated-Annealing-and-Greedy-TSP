@@ -1,3 +1,5 @@
+The source code of the program can be found at: https://github.com/aaronfox/Simulated-Annealing-and-Greedy-TSP
+
 To run the program, you must have Python 3 installed. You must also have all the prerequsuite Python modules using Python's pip installer:
 
 pip install itertools
